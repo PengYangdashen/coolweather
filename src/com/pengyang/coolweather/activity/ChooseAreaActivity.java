@@ -14,7 +14,10 @@ import com.pengyang.coolweather.util.Utility;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -66,6 +69,15 @@ public class ChooseAreaActivity extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.choose_area);
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		if (prefs.getBoolean("city_selected", false)) {
+			Intent intent = new Intent(this, WeatherActivity.class);
+			startActivity(intent);
+			finish();
+			return;
+		}
+		
 		listView = (ListView) findViewById(R.id.list_view);
 		titleText = (TextView) findViewById(R.id.title_text);
 		adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, dataList);
@@ -83,6 +95,12 @@ public class ChooseAreaActivity extends Activity{
 				} else if (currentLevel == LEVEL_CITY) {
 					selectedCity = cityList.get(position);
 					queryCounties();
+				} else if (currentLevel == LEVEL_COUNTY) {
+					String countyCode = countyList.get(position).getCountyCode();
+					Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
+					intent.putExtra("county_code", countyCode);
+					startActivity(intent);
+					finish();
 				}
 			}
 		});
@@ -97,7 +115,7 @@ public class ChooseAreaActivity extends Activity{
 		if (provinceList.size() > 0) {
 			dataList.clear();
 			for (Province province : provinceList) {
-				dataList.add(province.getProvincerName());
+				dataList.add(province.getProvinceName());
 			}
 			adapter.notifyDataSetChanged();
 			listView.setSelection(0);
@@ -113,7 +131,7 @@ public class ChooseAreaActivity extends Activity{
 	 */
 	private void queryCities() {
 		cityList = coolWeatherDB.loadCities(selectedProvince.getId());
-		Log.i("PY", "queryCities.loadCities" + selectedProvince.getProvincerName());
+		Log.i("PY", "queryCities.loadCities" + selectedProvince.getProvinceName());
 		if (cityList.size() > 0) {
 			dataList.clear();
 			for (City city : cityList) {
@@ -121,10 +139,10 @@ public class ChooseAreaActivity extends Activity{
 			}
 			adapter.notifyDataSetChanged();
 			listView.setSelection(0);
-			titleText.setText(selectedProvince.getProvincerName());
+			titleText.setText(selectedProvince.getProvinceName());
 			currentLevel = LEVEL_CITY;
 		} else {
-			queryFromServer(selectedProvince.getProvincerCode(), "city");
+			queryFromServer(selectedProvince.getProvinceCode(), "city");
 		}
 	}
 	

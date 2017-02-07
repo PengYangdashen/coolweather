@@ -43,7 +43,7 @@ public class CoolWeatherDB {
 	public synchronized static CoolWeatherDB getInstance(Context context) {
 		if (coolWeatherDB == null) {
 			coolWeatherDB = new CoolWeatherDB(context);
-		}
+		} 
 		return coolWeatherDB;
 	}
 	
@@ -53,8 +53,8 @@ public class CoolWeatherDB {
 	public void saveProvince(Province province) {
 		if (province != null) {
 			ContentValues values = new ContentValues();
-			values.put("province_name", province.getProvincerName());
-			values.put("province_code", province.getProvincerCode());
+			values.put("province_name", province.getProvinceName());
+			values.put("province_code", province.getProvinceCode());
 			db.insert("Province", null, values);
 		}
 	}
@@ -69,8 +69,8 @@ public class CoolWeatherDB {
 			do {
 				Province province = new Province();
 				province.setId(cursor.getInt(cursor.getColumnIndex("id")));
-				province.setProvincerName(cursor.getString(cursor.getColumnIndex("province_name")));
-				province.setProvincerCode(cursor.getString(cursor.getColumnIndex("province_code")));
+				province.setProvinceName(cursor.getString(cursor.getColumnIndex("province_name")));
+				province.setProvinceCode(cursor.getString(cursor.getColumnIndex("province_code")));
 				list.add(province);
 			} while (cursor.moveToNext());
 		}
@@ -98,7 +98,7 @@ public class CoolWeatherDB {
 	 */
 	public List<City> loadCities (int provinceId) {
 		List<City> list = new ArrayList<City>();
-		Cursor cursor = db.query("City", null, null, null, null, null, null);
+		Cursor cursor = db.query("City", null, "province_id = ?", new String [] { String.valueOf(provinceId) }, null, null, null);
 		if (cursor.moveToFirst()) {
 			do {
 				City city = new City();
@@ -133,7 +133,7 @@ public class CoolWeatherDB {
 	 */
 	public List<County> loadCounties (int cityId) {
 		List<County> list = new ArrayList<County>();
-		Cursor cursor = db.query("County", null, null, null, null, null, null);
+		Cursor cursor = db.query("County", null, "city_id = ?", new String [] { String.valueOf(cityId) }, null, null, null);
 		if (cursor.moveToFirst()) {
 			do {
 				County county = new County();

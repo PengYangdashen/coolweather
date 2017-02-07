@@ -3,18 +3,18 @@ package com.pengyang.coolweather.entity;
 public class Province {
 
 	private int id;
-	private String provincerName;
-	private String provincerCode;
+	private String provinceName;
+	private String provinceCode;
 
 	public Province() {
 		super();
 	}
 
-	public Province(int id, String provincerName, String provincerCode) {
+	public Province(int id, String provinceName, String provinceCode) {
 		super();
 		this.id = id;
-		this.provincerName = provincerName;
-		this.provincerCode = provincerCode;
+		this.provinceName = provinceName;
+		this.provinceCode = provinceCode;
 	}
 
 	public int getId() {
@@ -25,20 +25,20 @@ public class Province {
 		this.id = id;
 	}
 
-	public String getProvincerName() {
-		return provincerName;
+	public String getProvinceName() {
+		return provinceName;
 	}
 
-	public void setProvincerName(String provincerName) {
-		this.provincerName = provincerName;
+	public void setProvinceName(String provinceName) {
+		this.provinceName = provinceName;
 	}
 
-	public String getProvincerCode() {
-		return provincerCode;
+	public String getProvinceCode() {
+		return provinceCode;
 	}
 
-	public void setProvincerCode(String provincerCode) {
-		this.provincerCode = provincerCode;
+	public void setProvinceCode(String provinceCode) {
+		this.provinceCode = provinceCode;
 	}
 
 }
