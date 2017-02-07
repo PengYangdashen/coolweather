@@ -7,6 +7,7 @@ import com.pengyang.coolweather.util.HttpUtil;
 import com.pengyang.coolweather.util.Utility;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -15,10 +16,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class WeatherActivity extends Activity {
+public class WeatherActivity extends Activity implements OnClickListener{
 
 	
 	private LinearLayout llWeatherInfo;
@@ -46,6 +49,15 @@ public class WeatherActivity extends Activity {
 	 * 显示当前时间
 	 */
 	private TextView tvCurrentDate;
+	/**
+	 * 切换全部城市按钮
+	 */
+	private Button btnWholeCity;
+	/**
+	 * 更新天气按钮
+	 */
+	private Button btnRefreshWeather;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +76,9 @@ public class WeatherActivity extends Activity {
 		} else {
 			showWeather();
 		}
+		
+		btnWholeCity.setOnClickListener(this);
+		btnRefreshWeather.setOnClickListener(this);
 	}
 
 	/**
@@ -142,6 +157,32 @@ public class WeatherActivity extends Activity {
 		tvTemp1 = (TextView) findViewById(R.id.tv_temp1);
 		tvTemp2 = (TextView) findViewById(R.id.tv_temp2);
 		tvCurrentDate = (TextView) findViewById(R.id.tv_current_date);
+		
+		btnWholeCity = (Button) findViewById(R.id.btn_city);
+		btnRefreshWeather = (Button) findViewById(R.id.btn_refresh);
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.btn_city:
+			Intent intent = new Intent(this, ChooseAreaActivity.class);
+			intent.putExtra("from_weather_activity", true);
+			startActivity(intent);
+			finish();
+			break;
+
+		case R.id.btn_refresh:
+			tvPublish.setText("同步中...");
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+			String weatherCode = prefs.getString("weather_code", "");
+			if (!TextUtils.isEmpty(weatherCode)) {
+				queryWeatherInfo(weatherCode);
+			}
+			break;
+		default :
+			break;
+		}
 	}
 
 }
